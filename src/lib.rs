@@ -20,6 +20,11 @@ pub mod houselights {
         pub green: u8,
         pub blue:  u8
     }
+    impl RGB {
+        pub fn null() -> RGB {
+            RGB { red: 0, green: 0, blue: 0 }
+        }
+    }
 
     #[derive(Clone,Debug)]
     pub struct Zone  {
@@ -29,12 +34,26 @@ pub mod houselights {
         pub name: String
     }
 
+    pub struct Dmx {
+        source: DmxSource
+    }
+    impl Dmx {
+        pub fn new() -> Dmx {
+            Dmx { source: DmxSource::new("Controller").unwrap() }
+        }
+    }
+    impl Drop for Dmx {
+        fn drop(&mut self) {
+            let _res = self.source.terminate_stream(1);
+        }
+    }
+    
     // return RGB for a given color temperature
     pub fn kelvin (mut temp: u16) -> RGB {
         // http://www.tannerhelland.com/4435/convert-temperature-rgb-algorithm-code/
         temp /= 100;
 
-        let mut rgb: RGB = RGB { red: 0, green: 0, blue: 0 };
+        let mut rgb: RGB = RGB::null();
         // calculate red
         if temp <= 66 {
             rgb.red = 255;
@@ -100,7 +119,7 @@ pub mod houselights {
         return c;
     }
     
-    pub fn render( lights: &[RGB], zones: &[Zone], dmx: &DmxSource ) {
+    pub fn render( lights: &[RGB], zones: &[Zone], dmx: &Dmx ) {
         let spliced = splice_null_pixels(lights, zones);
         let mut out: Vec<u8> = vec![];
         for rgb in spliced.iter() {
@@ -118,7 +137,7 @@ pub mod houselights {
         universes.push(out);
         let mut universe: u16 = 1;
         for u in universes {
-            let _res = dmx.send(universe, &u);
+            let _res = dmx.source.send(universe, &u);
             universe += 1;
         }
     }
@@ -130,12 +149,12 @@ pub mod houselights {
         for zone in zones {
             // null pixels at the head of the zone
             for _i in 0..zone.head {
-                copy.insert(idx, RGB { red: 0, green: 0, blue: 0 });
+                copy.insert(idx, RGB::null());
             }
             // and at the tail
             idx += zone.head as usize + zone.body as usize;
             for _i in 0..zone.tail {
-                copy.insert(idx, RGB { red: 0, green: 0, blue: 0 });
+                copy.insert(idx, RGB::null());
             }
             idx += zone.tail as usize;
         }
