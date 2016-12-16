@@ -1,0 +1,7 @@
+[package]
+name = "houselights"
+version = "0.1.0"
+authors = ["mark bracher <mbracher@ziprecruiter.com>"]
+
+[dependencies]
+sacn = "0.1.1"
