@@ -5,7 +5,7 @@ mod tests {
     }
 }
 
-mod lights {
+pub mod houselights {
     extern crate sacn;
     use self::sacn::DmxSource;
 
@@ -13,15 +13,21 @@ mod lights {
 
     const GAMMA: f32 = 2.2;
     const GC_BOTTOM_THRESHOLD: u16 = 20;
-    
-    #[derive(Clone)]
+
+    #[derive(Clone,Debug)]
     pub struct RGB {
-        red:   u8,
-        green: u8,
-        blue:  u8
+        pub red:   u8,
+        pub green: u8,
+        pub blue:  u8
     }
 
-    pub struct Zone  { head: u8, body: u8, tail: u8, name: String }
+    #[derive(Clone,Debug)]
+    pub struct Zone  {
+        pub head: u8,
+        pub body: u8,
+        pub tail: u8,
+        pub name: String
+    }
 
     // return RGB for a given color temperature
     pub fn kelvin (mut temp: u16) -> RGB {
@@ -68,7 +74,7 @@ mod lights {
         return value as u8;
     }
 
-    pub fn scale_rgb(rgb: RGB, intensity: f32, max_intensity: u8) -> RGB {
+    pub fn scale_rgb(rgb: RGB, intensity: f32, max_intensity: f32) -> RGB {
         let i: f32 = intensity * max_intensity as f32;
         let scaled: RGB = RGB {
             red:   (rgb.red   as f32 * i).round() as u8,
