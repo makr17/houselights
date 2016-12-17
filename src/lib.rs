@@ -26,6 +26,7 @@ pub mod houselights {
         }
     }
 
+    #[derive(Clone,Debug)]
     pub struct HSV {
         pub hue:        f32,  // 0-360, degrees
         pub saturation: f32,  // 0-1
