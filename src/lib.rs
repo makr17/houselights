@@ -26,6 +26,21 @@ pub mod houselights {
         }
     }
 
+    pub struct HSV {
+        hue:        f32,  // 0-360, degrees
+        saturation: f32,  // 0-1
+        brightness: f32   // 0-1
+    }
+    impl HSV {
+        pub fn null() -> HSV {
+            HSV {
+                hue:        0_f32,
+                saturation: 0_f32,
+                brightness: 0_f32
+            }
+        }
+    }
+
     #[derive(Clone,Debug)]
     pub struct Zone  {
         pub head: u8,
@@ -91,6 +106,40 @@ pub mod houselights {
             return 255_u8;
         }
         return value as u8;
+    }
+
+    pub fn hsv2rgb(hsv: HSV) -> RGB {
+        let c = hsv.brightness * hsv.saturation;
+        let x = c * (1_f32 - (((hsv.hue * 6_f32) % 2_f32).abs() - 1_f32));
+        let m = hsv.brightness - c;
+        let mut red   = 0_f32;
+        let mut green = 0_f32;
+        let mut blue  = 0_f32;
+        if hsv.hue < 1_f32/6_f32 {
+            red   = c;
+            green = x;
+        } else if hsv.hue < 1_f32/3_f32 {
+            red   = x;
+            green = c;
+        } else if hsv.hue < 1_f32/2_f32 {
+            green = c;
+            blue  = x;
+        } else if hsv.hue < 2_f32/3_f32 {
+            green = x;
+            blue  = c;
+        } else if hsv.hue < 5_f32/6_f32 {
+            red   = x;
+            blue  = c;
+        } else {
+            red   = c;
+            blue  = x;
+        }
+        let rgb = RGB {
+            red:   ((red   + m) * 255_f32).round() as u8,
+            green: ((green + m) * 255_f32).round() as u8,
+            blue:  ((blue  + m) * 255_f32).round() as u8
+        };
+        return rgb;
     }
 
     pub fn scale_rgb(rgb: RGB, intensity: f32, max_intensity: f32) -> RGB {
