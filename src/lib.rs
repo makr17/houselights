@@ -27,9 +27,9 @@ pub mod houselights {
     }
 
     pub struct HSV {
-        hue:        f32,  // 0-360, degrees
-        saturation: f32,  // 0-1
-        brightness: f32   // 0-1
+        pub hue:        f32,  // 0-360, degrees
+        pub saturation: f32,  // 0-1
+        pub brightness: f32   // 0-1
     }
     impl HSV {
         pub fn null() -> HSV {
