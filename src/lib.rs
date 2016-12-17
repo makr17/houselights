@@ -109,7 +109,7 @@ pub mod houselights {
         return value as u8;
     }
 
-    pub fn hsv2rgb(hsv: HSV) -> RGB {
+    pub fn hsv2rgb(hsv: &HSV) -> RGB {
         let c = hsv.brightness * hsv.saturation;
         let x = c * (1_f32 - (((hsv.hue * 6_f32) % 2_f32).abs() - 1_f32));
         let m = hsv.brightness - c;
