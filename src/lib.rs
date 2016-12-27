@@ -143,7 +143,7 @@ pub mod houselights {
         return rgb;
     }
 
-    pub fn scale_rgb(rgb: RGB, intensity: f32, max_intensity: f32) -> RGB {
+    pub fn scale_rgb(rgb: &RGB, intensity: f32, max_intensity: f32) -> RGB {
         let i: f32 = intensity * max_intensity as f32;
         let scaled: RGB = RGB {
             red:   (rgb.red   as f32 * i).round() as u8,
